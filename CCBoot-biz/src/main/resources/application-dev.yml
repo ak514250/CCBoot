@@ -1,0 +1,48 @@
+#spring:
+#  boot:
+#    admin:
+#      client:
+#        url: http://localhost:8070
+#        username: admin
+#        password: admin123
+#        instance:
+#          service-base-url: http://localhost:${server.port}
+
+sharding:
+  jdbc:
+    datasource:
+      names: ds0,ds1
+      ds0:
+        type: com.alibaba.druid.pool.DruidDataSource
+        driver-class-name: org.gjt.mm.mysql.Driver
+        url: jdbc:mysql://47.99.129.104:3306/test_sharding_01?useUnicode=true&characterEncoding=UTF-8
+        username: user01
+        password: ak402507979
+      ds1:
+        type: com.alibaba.druid.pool.DruidDataSource
+        driver-class-name: org.gjt.mm.mysql.Driver
+        url: jdbc:mysql://47.99.129.104:3306/test_sharding_02?useUnicode=true&characterEncoding=UTF-8
+        username: user01
+        password: ak402507979
+
+    config:
+      sharding:
+        default-database-strategy:
+          inline:
+            sharding-column: order_id
+            algorithm-expression: ds$->{order_id % 2}
+        tables:
+          user:
+            actual-data-nodes: ds$->{0..1}.user_$->{0..1}
+            table-strategy:
+              inline:
+                sharding-column: user_id
+                algorithm-expression: user_$->{user_id % 2}
+            key-generator:
+              column: user_id
+              type: SNOWFLAKE
+
+
+
+
+

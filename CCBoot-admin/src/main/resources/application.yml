@@ -1,0 +1,39 @@
+server:
+  port: 8070
+  tomcat:
+    max-threads: 10   #Spring boot自带的tomcat线程数默认值为200个
+    min-spare-threads: 5    #初始化线程数
+
+spring:
+   profiles:
+     active: ${profileActive}
+   application:
+     name: ccboot-admin
+   security:
+     user:
+       name: admin
+       password: admin123
+
+   boot:
+     admin:
+       monitor:
+         period: 10000 #监控刷新时间
+       discovery:
+         enabled: true  #是否开启自动发现服务
+
+
+logging:
+  config: classpath:config/logback/logback-spring.xml
+
+# 2.0开始，actuator默认不开放，所以要设置为开放
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"  #选择暴露的端点  info,health,env,beans
+        #不暴露的端点
+        #exclude=env
+  endpoint:
+    health:
+      show-details: ALWAYS   #health endpoint是否必须显示全部细节。默认情况下, /actuator/health 是公开的，并且不显示细节。
+
